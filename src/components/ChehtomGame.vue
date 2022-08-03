@@ -1,12 +1,10 @@
 <template>
   <h1>Welcome in Chehtom</h1>
   <displayGame ref="grille" />
-  <button @click="changeSchlag"> changer le premier mot par schlag</button>
-  <h2>Le jeu </h2>
-  <p>Essai n°{{ count }} </p>
+  <br />
   <input type="text" name="inputWord" v-model="wordToTry">
-  <p> le mot entré : {{ wordToTry}} </p>
-  <button @click="tryWord(wordToTry)">Is it the ChehWord ?</button>
+  <button @click="tryWord(wordToTry)">Cheh!</button>
+  <p>Essai n°{{ count }} </p>
   <p v-if="win>0"> <strong>Victory</strong></p>
   <p v-if="count === 6"> Perdu !</p>
   <h2>La soluce pour les nullos !</h2>
@@ -29,7 +27,7 @@ export default {
         chehWordArray: ['p','i','r','a','t','e'],
         colorArray: ["c0","c0","c0","c0","c0","c0"],
         showCheh : false,
-        wordToTry : 'Un mot de 6 lettres please',
+        wordToTry : 'Un mot de 6 lettres!',
         win: 0,
         count : 0,
         resArray: ['.','.','.','.','.','.']
@@ -67,12 +65,8 @@ export default {
             this.win = 0;
             this.count++;
             //display the right letters on the grid
-            this.$refs.grille.changeAWord(this.count,this.resArray.join(""));
-
+            this.$refs.grille.displayFirstLetter(this.count,this.chehword);
         }
-    },
-    changeSchlag(){
-        this.$refs.grille.changeAWord(0,'schlag')
     },
     whereLetterIsInChehword(l,cw){
         // renvoie l'index de la position de la lettre dans le sheh word
@@ -96,6 +90,9 @@ export default {
         }
         console.log('colorArray:', this.colorArray);
     }
+  },
+  mounted() {
+    this.$refs.grille.displayFirstLetter(0,this.chehword);
   }
 }
 </script>
