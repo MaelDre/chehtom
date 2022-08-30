@@ -43,6 +43,9 @@ export default {
   methods: {
     async tryWord(w){
         console.log("starting tryWord method... with the word", w);
+        // put the word in lower case
+        w = w.toLowerCase();
+        
         let rese = this.whereLetterIsInChehword('e',w);
         console.log (rese);
 

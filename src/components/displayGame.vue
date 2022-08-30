@@ -163,6 +163,7 @@ td {
     border-width:1px;
     border-style:solid; 
     border-color:black;
+    width: 24px;
 }
 .c0 {
   color: #883838;
