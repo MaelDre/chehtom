@@ -83,14 +83,14 @@ export default {
             })
         },
         displayALetterLoop(i,j,nw,colArray, nbl){
-            setTimeout(function() {   //  call a 3s setTimeout when the loop is called
-                    console.log('helloo j', j);   //  your code here
+            setTimeout(function() {   //  call a x s setTimeout when the loop is called
+                    console.log('loop j', j);   //  your code here
                     this.chehObjArray[i][j].letter = nw[j];
                     this.chehObjArray[i][j].color = colArray[j];
                     //const res = await this.displayAletterObj(i,j, nw[j], colArray[j]);
                     
                     j++;                    //  increment the counter
-                    if (j < nbl) {           //  if the counter < 10, call the loop function
+                    if (j < nbl) {           //  if the counter < j, call the loop function
                         this.displayALetterLoop(i,j,nw,colArray, nbl);             //  ..  again which will trigger another 
                     }                    //  ..  setTimeout()
                 }.bind(this), 500);

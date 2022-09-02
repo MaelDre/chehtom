@@ -2,12 +2,13 @@
   <h1>Welcome in Chehtom</h1>
   <displayGame ref="grille" />
   <br />
-  <input type="text" name="inputWord" v-model="wordToTry">
+  <input id="wordInput" type="text" name="inputWord" v-model="wordToTry" v-on:keyup.enter="tryWord(wordToTry)">
   <button @click="tryWord(wordToTry)">Cheh!</button>
   <p>Essai n°{{ count }} </p>
-  <p v-if="win>0"> <strong>Victory</strong></p>
+  <p v-if="win>0"> <strong>Victory ! {{ chehWord }} !!!</strong></p>
   <p v-if="count === 6"> Perdu !</p>
   <p>Mot de {{ letternb }} lettres</p>
+  <p> {{ result_message }}</p>
   <h2>La soluce pour les nullos !</h2>
   <button @click="showCheh  = !showCheh">Voir le Chehword</button>
   <p v-if="showCheh"> <strong>{{ chehword }}</strong></p>
@@ -28,8 +29,16 @@ export default {
   },
   data() {
     return {
-        chehword: 'pirate',
+        word: 'pirate',
+        chehWord: 'piratecheh',
         chehList: ["pirate", "jambon", "chehhh", "chelou", "balise", "bateau", "ballon", "gateau", "cocheh", "chehbmami", "chehkira"],
+        chehDict: [
+          {"w": "shakira", "cw":"chehkira"},
+          {"w": "crochet", "cw":"groscheh"},
+          {"w": "checkup", "cw":"chehcup"},
+          {"w": "attacher", "cw":"attacheh"},
+          {"w": "chebmami", "cw":"chehbmami"}
+        ],
         letternb: 6,
         chehWordArray: ['p','i','r','a','t','e'],
         colorArray: ["c0","c0","c0","c0","c0","c0"],
@@ -38,6 +47,7 @@ export default {
         win: 0,
         count : 0,
         resArray: ['.','.','.','.','.','.'],
+        result_message : "chehh"
     }
   },
   methods: {
@@ -51,13 +61,19 @@ export default {
 
         let wordToTryArray = Array.from(w);
         console.log(wordToTryArray);
+        
         // we check if the letters matches
-        this.checkLetter(wordToTryArray[0],0,this.chehword);
-        this.checkLetter(wordToTryArray[1],1,this.chehword);
-        this.checkLetter(wordToTryArray[2],2,this.chehword);
-        this.checkLetter(wordToTryArray[3],3,this.chehword);
-        this.checkLetter(wordToTryArray[4],4,this.chehword);
-        this.checkLetter(wordToTryArray[5],5,this.chehword);
+        //this.checkLetter(wordToTryArray[0],0,this.word);
+        //this.checkLetter(wordToTryArray[1],1,this.word);
+        //this.checkLetter(wordToTryArray[2],2,this.word);
+        //this.checkLetter(wordToTryArray[3],3,this.word);
+        //this.checkLetter(wordToTryArray[4],4,this.word);
+        //this.checkLetter(wordToTryArray[5],5,this.word);
+
+        // New checkLetter with a loop
+        for (let i=0; i < this.word.length; i++){
+          this.checkLetter(wordToTryArray[i],i,this.word);
+        }
 
         // Obsolete : useless new
         // display the word entered on the grid
@@ -72,15 +88,24 @@ export default {
 
         // Ici il faudrait que je trouve un moyen d'attendre que le mot entré ait été affiché pour jouer la suite
         // Il faudrait controler l'état de l'affichage avec un genre de jeton, pour empecher toute action tant que l'affichage n'est pas fini.
-        if (w === this.chehword) {
+        if (w === this.word) {
             console.log("victory!");
             this.win = 1;
         }
-        else{
+        else if ((w != this.word) && (this.count === 5)){
+          // If not victory after 6 try, it is a defeat !
+          this.win = -1;
+          this.result_message ="Perdu Looser";
+        }
+        else if ((w != this.word) && (this.count < 5)){
+            console.log("not finished yet ")
             this.win = 0;
             this.count++;
             //display the right letters on the grid
-            this.$refs.grille.displayFirstLetter(this.count,this.chehword);
+            this.$refs.grille.displayFirstLetter(this.count,this.word);
+
+            // put the focus on the text input field
+            wordInput.focus();
         }
     },
     whereLetterIsInChehword(l,cw){
@@ -89,7 +114,7 @@ export default {
         return cw.search(l);
     },
     checkLetter(l,i,cw){
-        //this method checks if the letter is in the chehWord AND at the right place 
+        //this method checks if the letter is in the Word AND at the right place 
         if (this.whereLetterIsInChehword(l,cw) === i){
             console.log (l, 'est à sa place well done!');
             this.resArray[i] = l;
@@ -108,13 +133,16 @@ export default {
     resetGame(){
         // select a new chehword
         // get random index value
-        let randomIndex = Math.floor(Math.random() * this.chehList.length);
+        let randomIndex = Math.floor(Math.random() * this.chehDict.length);
 
         // get random item
-        this.chehword = this.chehList[randomIndex];
+        this.word = this.chehDict[randomIndex].w;
+
+        // get the associated cheh version of the word
+        this.chehWord = this.chehDict[randomIndex].cw;
 
         // count the number of letters
-        this.letternb = this.chehword.length;
+        this.letternb = this.word.length;
 
         // reset counter
         this.count = 0;
@@ -123,11 +151,12 @@ export default {
         this.$refs.grille.cleanGrid2(this.letternb);
 
         // displayFirstLetter
-        this.$refs.grille.displayFirstLetter(0,this.chehword);
+        this.$refs.grille.displayFirstLetter(0,this.word);
     }
   },
   mounted() {
-    this.$refs.grille.displayFirstLetter(0,this.chehword);
+    this.$refs.grille.displayFirstLetter(0,this.word);
+    wordInput.focus();
   }
 }
 </script>
