@@ -1,15 +1,23 @@
 <template>
-  <h1>CHEHTOM</h1>
+  <h1>CHEHHTOM</h1>
+  <p>{{ letternb }} lettres à trouver</p>
   <displayGame ref="grille" />
   <br />
   <input id="wordInput" type="text" name="inputWord" v-model="wordToTry" v-on:keyup.enter="tryWord(wordToTry)">
-  <button @click="tryWord(wordToTry)">Cheh!</button>
-  <p>Essai n°{{ count }} </p>
-  <p v-if="win>0"> <strong>Victory ! {{ chehWord }} !!!</strong></p>
-  <p v-if="count === 6"> Perdu !</p>
-  <p>Mot de {{ letternb }} lettres</p>
-  <p> {{ result_message }}</p>
-  <h2>La soluce pour les nullos !</h2>
+  <br />
+  <p>{{ wordToTry.length }} lettres</p>
+  <br />
+  <button @click="tryWord(wordToTry)" v-if="count <= 5">Cheh!</button>
+  
+  <h1 v-if="win>0"> <strong>Victoire ! {{result_message }} {{ chehWord }} !!!</strong></h1>
+  <h1 v-if="count === 6"> Perdu ! {{result_message }} {{ chehWord }}</h1>
+  <br /><br />
+  <button @click="resetGame" v-if="win!=0">Recommencheh</button>
+
+  <!-- <p>{{ count }}</p>
+  <p>{{result_message }}</p> //-->
+  <h1>Pour les nullos</h1>
+  <p>- be removed soon-</p>
   <button @click="showCheh  = !showCheh">Voir le Chehword</button>
   <p v-if="showCheh"> <strong>{{ chehword }}</strong></p>
   <button @click="resetGame">Reset Game</button>
@@ -40,16 +48,20 @@ export default {
           {"w": "chebmami", "cw":"chehhbmami"},
           {"w": "empecher", "cw":"empechehh"},
           {"w": "toucher", "cw":"touchehhh"},
+          {"w": "chenapan", "cw":"chehhnapan"},
+          {"w": "cartouche", "cw":"cartouchehh"},
+          {"w": "achever", "cw":"achehhhver"},
+
         ],
         letternb: 6,
         chehWordArray: ['p','i','r','a','t','e'],
         colorArray: ["c0","c0","c0","c0","c0","c0"],
         showCheh : false,
-        wordToTry : 'Un mot de 6 lettres!',
+        wordToTry : '',
         win: 0,
         count : 0,
         resArray: ['.','.','.','.','.','.'],
-        result_message : "chehh"
+        result_message : "Echehh encore"
     }
   },
   methods: {
@@ -81,12 +93,14 @@ export default {
       // Ici il faudrait que je trouve un moyen d'attendre que le mot entré ait été affiché pour jouer la suite
       // Il faudrait controler l'état de l'affichage avec un genre de jeton, pour empecher toute action tant que l'affichage n'est pas fini.
       if (w === this.word) {
-          console.log("victory!");
+          // console.log("victory!");
           this.win = 1;
+          this.result_message ="Bravoooo";
       }
       else if ((w != this.word) && (this.count === 5)){
 
         // If not victory after 6 try, it is a defeat !
+        this.count++;
         this.win = -1;
         this.result_message ="Perdu Looser";
       }
@@ -173,6 +187,9 @@ export default {
       // reset counter
       this.count = 0;
 
+      // set win status to 0
+      this.win = 0;
+
       // clean the grid
       this.$refs.grille.cleanGrid2(this.letternb);
 
@@ -182,6 +199,8 @@ export default {
   },
   mounted() {
     // this function is executed directly when the app is mounted
+
+    this.resetGame();
 
     // we display the first letter of the word
     this.$refs.grille.displayFirstLetter(0,this.word);

@@ -18,7 +18,9 @@
         </td>
     </tr>
 </table>
-<p> {{ displayingstatus }}</p>
+<!-- 
+    <p> {{ displayingstatus }}</p>
+//-->    
 </template>
 
 <script>
@@ -155,29 +157,31 @@ export default {
 
 <style>
 table{
-    font-size:28px;
+    font-size:32px;
     margin-left: auto;
     margin-right: auto;
+    
 }
 td { 
     border-width:1px;
     border-style:solid; 
-    border-color:black;
-    width: 24px;
+    border-color:#FFFFFF;
+    width: 30px;
+    background-color: #8AD2FF;
 }
 .c0 {
-  color: #883838;
+  color: #000000;
 }
 .c1 {
   color: #000000;
-  background-color: rgb(255, 255, 0);
+  background-color: #F5E845;
 }
 .c2 {
   color: #000000;
-  background-color: #44AA38;
+  background-color: #78EBC8;
 }
 .maclasse2{
     font-size:40px;
-    color: #44AA38;
+    color: #A0EB78;
 }
 </style>
