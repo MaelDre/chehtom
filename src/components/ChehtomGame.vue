@@ -7,8 +7,7 @@
   <br />
   <p>{{ wordToTry.length }} lettres</p>
   <br />
-  <button @click="tryWord(wordToTry)" v-if="count <= 5">Cheh!</button>
-  
+  <button @click="tryWord(wordToTry)" v-if="can_play">Chehh!</button>
   <h1 v-if="win>0"> <strong>Victoire ! {{result_message }} {{ chehWord }} !!!</strong></h1>
   <h1 v-if="count === 6"> Perdu ! {{result_message }} {{ chehWord }}</h1>
   <br /><br />
@@ -61,11 +60,13 @@ export default {
         win: 0,
         count : 0,
         resArray: ['.','.','.','.','.','.'],
-        result_message : "Echehh encore"
+        result_message : "Echehh encore",
+        can_play : true     // used to manage the status of the chehh button                  
     }
   },
   methods: {
     async tryWord(w){
+      this.can_play = false;
       // this method  is the heart of the game
       // it is called each time the player submits a word
       
@@ -103,6 +104,7 @@ export default {
         this.count++;
         this.win = -1;
         this.result_message ="Perdu Looser";
+        this.can_play = false;
       }
       else if ((w != this.word) && (this.count < 5)){
 
@@ -114,6 +116,7 @@ export default {
 
         // put the focus on the text input field
         wordInput.focus();
+        this.can_play = true;
         }
     },
     whereLetterIsInChehword(l,cw){
@@ -170,6 +173,8 @@ export default {
       }
     },
     resetGame(){
+      // clean the grid
+      this.$refs.grille.cleanGrid2(this.letternb);
 
       // select a new chehword
       // get random index value
@@ -190,11 +195,14 @@ export default {
       // set win status to 0
       this.win = 0;
 
-      // clean the grid
+      // clean the grid again, to display the right number of letters
       this.$refs.grille.cleanGrid2(this.letternb);
 
       // displayFirstLetter
       this.$refs.grille.displayFirstLetter(0,this.word);
+
+      // activate the button to play
+      this.can_play = true;
     }
   },
   mounted() {
