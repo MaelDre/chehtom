@@ -145,9 +145,16 @@ export default {
         cleanGrid2(nbl){
             for (let i=0; i<6; i++){
                 // for each line
-                //this.chehObjArray[i]= [{"letter":".", "color":"c0"},{"letter":".", "color":"c0"},{"letter":".", "color":"c0"},{"letter":".", "color":"c0"},{"letter":".", "color":"c0"},{"letter":".", "color":"c0"}];
                 for(let j=0; j<nbl; j++){
                     this.chehObjArray[i][j] = {"letter":".", "color":"c0"};
+                }
+            }
+        },
+        // This method delete the grid of nbl letters
+        deleteGrid(nbl){
+            for (let i=0; i<6; i++){
+                for(let j=0; j<nbl; j++){
+                    this.chehObjArray[i].splice(j,1);
                 }
             }
         }

@@ -7,6 +7,7 @@
   <br />
   <p>{{ wordToTry.length }} lettres</p>
   <br />
+  <p> {{ error_message }} </p>
   <button @click="tryWord(wordToTry)" v-if="can_play">Chehh!</button>
   <h1 v-if="win>0"> <strong>Victoire ! {{result_message }} {{ chehWord }} !!!</strong></h1>
   <h1 v-if="count === 6"> Perdu ! {{result_message }} {{ chehWord }}</h1>
@@ -50,6 +51,17 @@ export default {
           {"w": "chenapan", "cw":"chehhnapan"},
           {"w": "cartouche", "cw":"cartouchehh"},
           {"w": "achever", "cw":"achehhhver"},
+          {"w": "cherie", "cw":"chehhhrie"},
+          {"w": "chetif", "cw":"chehhhtif"},
+          {"w": "avacher", "cw":"avachehh"},
+          {"w": "exagerer", "cw":"exachehhrer"},
+          {"w": "gratin", "cw":"GRATIN CHEH"},
+          {"w": "omaracuja", "cw":"omaracuchehh"},
+          {"w": "projet", "cw":"prochehhh"},
+          {"w": "cheptel", "cw":"chehhhhhptel"},
+          {"w": "cheminade", "cw":"Jacques Chehhminades"},
+
+
 
         ],
         letternb: 6,
@@ -61,7 +73,8 @@ export default {
         count : 0,
         resArray: ['.','.','.','.','.','.'],
         result_message : "Echehh encore",
-        can_play : true     // used to manage the status of the chehh button                  
+        can_play : true,     // used to manage the status of the chehh button
+        error_message : ""                  
     }
   },
   methods: {
@@ -70,26 +83,34 @@ export default {
       // this method  is the heart of the game
       // it is called each time the player submits a word
       
+      // check if the entered word is the right length
+      if (w.length != this.word.length){
+        // the word is NOT the right length, we change the error_message
+        this.error_message = "Ce n'est pas le bon nombre de lettres ! Le compte n'est pas bon Kévin !!";
+        // reset the input text
+        this.wordToTry = "";
+        this.can_play = true;
+        return;   
+      }
+      else {
+        // the word is the right length, we clean the error_message
+        this.error_message = "";
+      }
+      
       // put the word in lower case
       w = w.toLowerCase();
 
       // here we should manage the accents too
       w = w.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-      // convert the string to an array
-      //let wordToTryArray = Array.from(w);
-
-      // we check if the letters matches
-      //for (let i=0; i < this.word.length; i++){
-      //    this.checkLetter(wordToTryArray[i],i,this.word);
-      //}
+      // we compare the entered word with the word to find
       this.checkWord(w);
 
       // display the word entered on the new grid Obj
       this.$refs.grille.changeAWordObj(this.count,w, this.colorArray, this.letternb);
       
       // we wait the word to be displayed on the grid
-      await sleep(4000);
+      await sleep(4500);
         
       // Ici il faudrait que je trouve un moyen d'attendre que le mot entré ait été affiché pour jouer la suite
       // Il faudrait controler l'état de l'affichage avec un genre de jeton, pour empecher toute action tant que l'affichage n'est pas fini.
@@ -115,6 +136,7 @@ export default {
         this.$refs.grille.displayFirstLetter(this.count,this.word);
 
         // put the focus on the text input field
+        this.wordToTry = "";
         wordInput.focus();
         this.can_play = true;
         }
@@ -173,8 +195,8 @@ export default {
       }
     },
     resetGame(){
-      // clean the grid
-      this.$refs.grille.cleanGrid2(this.letternb);
+      // delete the previous grid
+      this.$refs.grille.deleteGrid(this.letternb);
 
       // select a new chehword
       // get random index value
